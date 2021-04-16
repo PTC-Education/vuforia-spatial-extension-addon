@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="objectDefaultFiles/object.js"></script>
+    <script src="objectDefaultFiles/pep.min.js"></script>
+    <script src="objectDefaultFiles/envelopeContents.js"></script>
+    <meta charset="UTF-8">
+    <title>timer</title>
+    <style>
+
+      #countdown {
+        position: relative;
+        height: 260px;
+        width: 260px;
+        text-align: center;
+        top: 0px;
+      }
+
+      #inner {
+        position: absolute;
+        height: 230px;
+        width: 230px;
+        top: -245px;
+        right: -15px;
+        text-align: center;
+        z-index: 1; 
+      }
+
+      #countdown-number {
+        color: rgb(45,255,255);
+        position: relative;
+        display: inline-block;
+        line-height: 260px;
+        font-size: 120px;
+        top: 0px;
+        left: 0px;
+      }
+
+/*      svg {
+        position: absolute;
+        right: 0;
+        width: 260px;
+        height: 260px;
+        transform: rotateY(0deg) rotateZ(-90deg);
+      }*/
+
+     /* svg circle {
+        stroke-dasharray: 800px;
+        stroke-dashoffset: 0px;
+        stroke-linecap: round;
+        stroke-width: 15px;
+        stroke: #00c117;
+        fill: none;
+        animation: countdown 5s linear infinite forwards;
+      }*/
+
+      @keyframes countdown {
+        from {
+          stroke-dashoffset: 0px;
+        }
+        to {
+          stroke-dashoffset: 785.3px;
+        }
+      }
+
+      svg {
+        position: absolute;
+        right: 0;
+        width: 260px;
+        height: 260px;
+        top: 0px;
+        transform: rotateY(0deg) rotateZ(-90deg);
+      }
+
+      #time_var {
+        cursor: pointer;
+        font-family: "Roboto", "Avenir", "Futura", Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 32px;
+        color: rgb(45,255,255);
+        font-weight: bold;
+        text-align: center;
+      }
+      .boxed {
+        border: 10px solid #2dffff;
+        width: 90%;
+        margin-top: 25px;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+    </style>
+</head>
+<body style="position: relative; width: 100%; height: 200%">
+
+<!-- <div id="countdown" style="background-color: #000; border-radius: 260px">
+  <div id="countdown-number"></div>
+  <svg>
+      <circle id="CIRCLE" r="122.5" cx="130" cy="130"></circle>
+      <div id="inner" style="background-color: rgba(255, 255, 255, 0.2);; border-radius: 260px;"></div>
+  </svg>
+</div> -->
+<div id="countdown" style="background-color: rgba(0, 0, 0, 0.5); border-radius: 260px">
+  <div id="countdown-number"></div>
+  <svg>
+    <circle r="122.5" cx="130" cy="130 "stroke-linecap="round" stroke-width="2" fill="none" stroke="black" style=""></circle>
+  </svg>
+  <svg>
+    <circle id="circle" r="125" cx="130" cy="130" stroke-linecap="round" stroke-width="10" fill="none" stroke="#2dffff"></circle>
+  </svg>
+</div>
+
+
+
+<div class="boxed">
+    <div id="time_var" contenteditable>Set Time</div>
+</div>
+
+
+<script>
+  
+  // bools is used to help know if user is trying to input a value within the variable text box
+  var time_var_box = false; 
+  var isListeningForKeyboard = false;
+  // initializing variables to get user's input
+  // length is also needed to resize text and make responsive 
+  var time_var = document.querySelector('#time_var');
+  var time_var_Length = time_var.innerText.length; 
+  var saved_atVar; // global to save Airtable Variable 
+
+
+
+  // realityInterface.onKeyUp(onKeyUp);
+  const countdownNumberEl = document.getElementById('countdown-number');
+  const circle = document.getElementById('circle');
+  var countdown = 0;
+  const radius = Number(circle.getAttribute('r'));
+  const circumference = 2 * radius * Math.PI;
+
+  var internaltimer = countdown; 
+  var interval = null; 
+
+
+
+  countdownNumberEl.innerHTML = countdown;
+
+
+// var testing = document.querySelector('#TEST');
+  function startTimer() {
+    countdownNumberEl.textContent = countdown;
+    circle.style.animation = `countdown ${countdown}s linear infinite forwards`;
+    circle.setAttribute('stroke-dasharray', circumference);
+    circle.setAttribute('stroke-dashoffset', circumference);
+    // TT bit is 1 when the timer is going 
+    realityInterface.write('TT', 1);
+    // DN bit is 0 when the timer is going 
+    realityInterface.write('DN', 0);
+          interval = setInterval(function() {
+            countdown = --countdown <= 0 ? internaltimer : countdown;
+            countdownNumberEl.textContent = countdown;
+            
+            
+            // // TT bit is 1 when the timer is going 
+            // realityInterface.write('TT', 1);
+            // // DN bit is 0 when the timer is going 
+            // realityInterface.write('DN', 0);
+
+            if (countdown == 1) {
+              // realityInterface.write('TT', 0);
+              // realityInterface.write('DN', 1);
+              clearInterval(interval);
+              // This is purely for visual, sets it back to 0 once timer finishes 
+              setTimeout(() => {
+                realityInterface.write('TT', 0);
+                realityInterface.write('DN', 1);
+                countdownNumberEl.textContent = "0"; 
+                circle.setAttribute('stroke-dasharray', 0);
+                circle.setAttribute('stroke-dashoffset', 360);
+
+              }, 1000);
+            }
+
+          }, 1000);
+  }
+
+
+  try {
+      // initializing new node, this is how you can make new nodes to send multiple values
+      var realityInterface = new RealityInterface();
+      // 0 = x, 0 = y position of the node in the UI 
+      realityInterface.initNode('EN', 'node', 0, -300); 
+      realityInterface.initNode('TT', 'node', 0, -90);
+      realityInterface.initNode('DN', 'node', 0, 130); 
+      realityInterface.write('EN', -1);
+
+
+      var _envelopeContents = new EnvelopeContents(realityInterface, document.body);
+      realityInterface.setMoveDelay(500);
+
+      realityInterface.onKeyboardClosed(function() {
+          // stop listening once the keyboard closes
+          isListeningForKeyboard = false; 
+          // if user has put in any value into api key or base id, display "SAVED" 
+          // this helps keeps it "sensitive" if user wants to share their screen
+          console.log('reset label frame text selection');
+      });
+
+  } catch (e) {
+      console.warn('Reality Interface is not accessible');
+  }
+
+  time_var.style.fontSize = (250/time_var_Length)+"pt";
+
+  // creating event listeners to let the user type-in their respective values
+  time_var.addEventListener("pointerup", function (){
+      time_var_box = true;
+      if (time_var.innerText === "Set Time"){
+          time_var.innerText = "";
+      }
+      isListeningForKeyboard = true;
+      realityInterface.openKeyboard();
+
+      if ((localStorage.getItem('saved_atVar').trim()) != null) {
+              time_var.innerText = (localStorage.getItem('saved_atVar').trim()); 
+          }
+  }, false);
+
+    // onKeyUp is what takes in the specifc input values and grabs each character 
+    function onKeyUp(e) {
+
+        if (time_var_box) {
+            
+            if (!isListeningForKeyboard) {
+                return;
+            }
+
+            if (e.key === "Backspace") {
+                time_var.innerText = time_var.innerText.slice(0, -1); // remove last character
+            } 
+            else if (e.key === " ") {
+                time_var.innerText = time_var.innerText + "\u00a0"; // special space character doesn't get escaped
+                resetScroll();
+                setTimeout(function() {
+                    resetScroll(); // also do it after a slight delay
+                }, 100);
+            } 
+            else if (e.key === "Shift") {
+                time_var.innerText = time_var.innerText; // if the user wants to capitalize a character
+                resetScroll();
+                setTimeout(function() {
+                    resetScroll(); // also do it after a slight delay
+                }, 100);
+            } 
+            else if (e.key === "Enter") {
+                realityInterface.closeKeyboard();
+                // countdown = time_var.innerText;
+                // internaltimer = countdown; 
+                // clearInterval(interval);
+                // startTimer();
+                return;
+            } 
+            else {
+                time_var.innerText = time_var.innerText + e.key; 
+            }
+
+            resizeText();
+
+            // countdown = time_var.innerText;
+            // internaltimer = countdown; 
+            // clearInterval(interval);
+            // startTimer();
+
+            saved_atVar = time_var.innerText;
+            localStorage.setItem('saved_atVar', time_var.innerText);
+        }
+    }
+
+  // call onKeyUp, the realityInterface.onKeyUp is a built in function, and we pass our
+  // onKeyUp function in it
+
+  // Resizes text, change lines 477-479 if you want a different scale
+  function resizeText() {
+      time_var.innerText = time_var.innerText; 
+
+      var time_var_fontSize = Math.min(70, (((time_var_Length*10)+150)/(time_var_Length)));
+
+      time_var.style.fontSize = time_var_fontSize + "pt";
+  }
+
+  function resetScroll() {
+      if (window.scrollX !== 0 || window.scrollY !== 0) {
+          window.scrollTo(0,0); // don't let keyboard events scroll the window
+      }
+      parent.postMessage(JSON.stringify({resetScroll: true}), '*');
+  }
+
+
+  realityInterface.onKeyUp(onKeyUp);
+
+  try {
+      realityInterface.addReadListener('EN', function (e) {
+ 
+          if (e.value == 0) {
+              countdown = 0;
+              countdownNumberEl.textContent = 0;
+              clearInterval(interval);
+              circle.style.animation = "none";
+          }
+          else if (e.value == 1) {
+            countdown = time_var.innerText;
+            internaltimer = countdown; 
+            clearInterval(interval);
+            startTimer();
+          }
+          else if (e.value == -1) {
+            countdownNumberEl.textContent = 0;
+          }
+
+
+      });
+  } catch (e) {
+      console.warn('Reality Interface is not accessible');
+  }
+
+
+</script>
+</body>
+</html>
