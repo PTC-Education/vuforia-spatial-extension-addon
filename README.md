@@ -29,8 +29,11 @@ This addon gives you access to the following tools:
   * `value` which takes either an input string if you are sending a value to Airtable, or use this node as output to another tool if you are receiving a value from Airtable.
   * In the textbox, enter the name of the variable you are trying to access, and use the toggle button to switch between sending and receiving
   * To connect to your Airtable account, open the `Airtable.js` file within the airtable tool folder, and input your Account info
+<br />
+<br />
+<br />
 
-<img src="https://github.com/PTC-Education/vuforia-spatial-extension-addon/blob/master/tools/newSlider/icon.gif" alt="newSlider Tool's icon.gif" width="200" height="200"/>
+<img src="https://github.com/PTC-Education/vuforia-spatial-extension-addon/blob/master/tools/newSlider/icon.gif" alt="newSlider Tool's icon.gif" width="200" height="200"/><br /><br /><br />
 
 * **Name:** newSlider
 * This tool is an improvement to the existing slider tool. Allows you to send values from 100 to -100 to other tools. If you want to increase or decrease the range, look at **line 210** within the `index.html` file in the newSlider tool folder
@@ -64,8 +67,11 @@ This addon gives you access to the following tools:
 * This tool allows you to send a text value to another too 
 * **Number of nodes:** 1
   * `value` which can connect to other nodes to send the desired text value
+<br />
+<br />
+<br />
 
-<img src="https://github.com/PTC-Education/vuforia-spatial-extension-addon/blob/master/tools/tonTimer/icon.gif" alt="tonTimer Tool's icon.gif" width="200" height="200"/>
+<img src="https://github.com/PTC-Education/vuforia-spatial-extension-addon/blob/master/tools/tonTimer/icon.gif" alt="tonTimer Tool's icon.gif" width="200" height="200"/><br /><br /><br />
 
 * **Name:** tonTimer
 * This tool mimics the TON Timer within Rockwell Automation PLC softwares (such as Studio 5000, or Connected Components Workbench). Use the text box to enter the timer amount (in seconds). See <a href="https://twcontrols.com/lessons/allen-bradley-micro800-timer-instructions-in-connected-components-workbench-software">this helpful video</a> for more information on what the following 
@@ -73,8 +79,11 @@ This addon gives you access to the following tools:
   * `EN` which starts the timer when given a value of 1 or stops the timer when given a value of 0 (Ex. using the on/off switch tool)
   * `TN` which outputs a 1 while the timer is timing and 0 otherwise, Ex. connect this node to a switch and the switch will stay on for X amount of seconds and then will turn off 
   * `DN` which outputs a 1 when the timer is finished and 0 otherwise 
+<br />
+<br />
+<br />
 
-<img src="https://github.com/PTC-Education/vuforia-spatial-extension-addon/blob/master/tools/trafficlight/icon.gif" alt="trafficlight Tool's icon.gif" width="200" height="200"/>
+<img src="https://github.com/PTC-Education/vuforia-spatial-extension-addon/blob/master/tools/trafficlight/icon.gif" alt="trafficlight Tool's icon.gif" width="200" height="200"/><br /><br /><br />
 
 * **Name:** trafficlight
 * This tool is an AR traffic light. You can turn on three different lights and then connect the output to send a value of 1, .5, or 0
