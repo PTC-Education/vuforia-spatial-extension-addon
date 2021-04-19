@@ -321,7 +321,7 @@ function rend(values) {
                 if (s_size !== null && s_size > 0) {
                     temp = {"SAMPLE_SIZE":`${s_size}`, "ACCELEROMETER":`${e.value}`};
                     // realityInterface.write('accelerometer', temp);
-                    realityInterface.writePublicData("value", "data", temp);
+                    realityInterface.writePublicData("accelerometer", "data", temp);
                 }
             });
         } catch (e) {
