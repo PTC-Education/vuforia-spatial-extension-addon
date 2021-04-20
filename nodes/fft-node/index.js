@@ -144,21 +144,23 @@ exports.render = function (object, tool, node, thisNode, callback, utilities) {
         thisNode.processedData = utilities.deepCopy(thisNode.data);
     }
     // If user is sending the object, then grab the size and rate
-    if (typeof(thisNode.publicData) == 'object') {
+    try{if (typeof(thisNode.publicData) == 'object') {
         sampleSize = parseInt(thisNode.publicData.data.SAMPLE_SIZE); 
         // sampleRate = parseInt(thisNode.publicData.data.SAMPLE_RATE);
         arrayMade = true;
     }
+} catch(error){console.log(error)}
 
 
     if (arrayMade) {
-        if (typeof(parseInt(thisNode.publicData.data.ACCELEROMETER)) == "number") { 
-            if (sampleSize > 0) {
-                if (!(isNaN(parseInt(thisNode.publicData.data.ACCELEROMETER)))) {
+       try{ if (typeof(parseFloat(thisNode.publicData.data.ACCELEROMETER)) == "number") { 
+        console.log('acceleromerooni: '+parseFloat(thisNode.publicData.data.ACCELEROMETER))
+        if (sampleSize > 0) {
+                if (!(isNaN(parseFloat(thisNode.publicData.data.ACCELEROMETER)))) {
                     if (i == 0) {
                         startTime = timestamp();
                         console.log(startTime);
-                        dataArray[i] = parseInt(thisNode.publicData.data.ACCELEROMETER);
+                        dataArray[i] = parseFloat(thisNode.publicData.data.ACCELEROMETER);
                     }
                     i += 1;
                     if (i == sampleSize) {
@@ -182,11 +184,12 @@ exports.render = function (object, tool, node, thisNode, callback, utilities) {
                         console.log(dataArray.length);
                     } 
                     else {
-                        dataArray[i] = parseInt(thisNode.publicData.data.ACCELEROMETER);
+                        dataArray[i] = parseFloat(thisNode.publicData.data.ACCELEROMETER);
                     }
                 }
             }
-        }
+        } }
+        catch(error){console.log(error)}
     }
     // console.log(typeof(thisNode.data.value));
     // console.log("THISNODE VALUE: " + thisNode.data.value);
